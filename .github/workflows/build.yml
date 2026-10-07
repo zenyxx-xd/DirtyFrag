@@ -50,6 +50,7 @@ jobs:
 
   build-dfroot:
     needs: build-lkms
+    if: false   # APK собираем в RootMyVivo; из этого репо нужны только ko
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
