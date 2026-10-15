@@ -4,20 +4,24 @@ plugins {
     id("com.android.application")
 }
 
-val signingProps = Properties().also {
-    it.load(rootProject.file("signing.properties").inputStream())
-}
+val signingProps = Properties()
+val signingPropsFile = rootProject.file("signing.properties")
+if (signingPropsFile.exists()) signingProps.load(signingPropsFile.inputStream())
 
 android {
     namespace = "df.root"
-    compileSdk = 36
+    compileSdk = 37
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "df.root"
         minSdk = 32
-        targetSdk = 36
-        versionCode = 302
-        versionName = "3.2"
+        targetSdk = 37
+        versionCode = 405
+        versionName = "4.5"
 
         ndk {
             abiFilters += listOf("arm64-v8a")
@@ -40,13 +44,9 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
-        }
-    }
-
-    applicationVariants.all {
-        outputs.all {
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = "DFRoot_${versionName}.apk"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -57,10 +57,6 @@ android {
 
     lint {
         checkReleaseBuilds = false
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 
     externalNativeBuild {
@@ -76,9 +72,13 @@ android {
     }
 }
 
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set(output.versionName.map { vn -> "DFRoot_${vn}.apk" })
+        }
+    }
+}
+
 dependencies {
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.preference)
 }

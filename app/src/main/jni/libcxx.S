@@ -123,8 +123,6 @@ libcxx_start:
     mov     x8, #SYS_execve
     svc     0
 
-    b       myexit
-
 myexit:
     mov     x0, #1
     mov     x8, #SYS_exit

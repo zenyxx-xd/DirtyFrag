@@ -16,6 +16,7 @@ keystore.jks
 
 # LKM build artifacts
 lkm/*.cmd
+lkm/*.o.d
 lkm/*.o
 lkm/*.mod
 lkm/*.mod.c
